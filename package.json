@@ -6,7 +6,8 @@
   "scripts": {
     "clean": "rm -rf ./dist",
     "build": "yarn clean && tsc",
-    "package": "yarn build && pkg ./dist/index.js --targets node10-win-x64,node10-macos-x64 --output ./bin/market-history"
+    "package": "yarn build && pkg ./dist/index.js --targets node10-win-x64,node10-macos-x64 --output ./bin/market-history",
+    "start": "ts-node ./src/index.ts"
   },
   "devDependencies": {
     "@types/json2csv": "^4.2.0",

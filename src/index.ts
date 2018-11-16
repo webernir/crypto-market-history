@@ -1,32 +1,27 @@
-import axios from "axios";
-import * as fs from "fs";
-import { parse } from "json2csv";
-import { flatten, uniq } from "lodash";
-import * as moment from "moment";
-import * as path from "path";
+import axios from "axios"
+import * as fs from "fs"
+import { parse } from "json2csv"
+import { flatten, uniq } from "lodash"
+import * as path from "path"
+import {
+  formatDate,
+  formatInverse,
+  generateNowFilename,
+  yesterday,
+  unixToDate
+} from "./dateUtils"
+import { HistoryRecord } from "./HistoryRecord"
 
-const coins = ["BTC", "ETH", "BCH", "LTC", "XRP"]
-
-function formatDate(date: Date): string {
-  return moment(date).format("YYYYMMDD")
-}
-
-function formatInverse(date: string): string {
-  return moment(date).format("DD/MM/YYYY")
-}
-
-interface HistoryRecord {
-  coin: string
-  time: Date
-  close: number
+function getUrl(coin: string, toDate: Date): string {
+  const toDateStr = formatDate(toDate)
+  return `https://cex.io/api/ohlcv/hd/${toDateStr}/${coin}/USD`
 }
 
 async function getHistory(
   coin: string,
   toDate: Date
 ): Promise<HistoryRecord[]> {
-  const toDateStr = formatDate(toDate)
-  const url = `https://cex.io/api/ohlcv/hd/${toDateStr}/${coin}/USD`
+  const url = getUrl(coin, toDate)
   console.log(`fetching data from: ${url}`)
 
   try {
@@ -36,7 +31,7 @@ async function getHistory(
       .then(z =>
         z.map(t => ({
           coin,
-          time: moment.unix(t[0]).toDate(),
+          time: unixToDate(t[0]),
           close: t[4]
         }))
       )
@@ -71,18 +66,11 @@ async function writeCoinsClosePrice(coins: string[], toDate: Date) {
   })
 
   const sorted = records.map(t => ({ ...t, time: formatInverse(t.time) }))
-  const filename = path.join(
-    outputDir,
-    `${formatDate(toDate)}.${moment().format("HH-mm-ss")}.csv`
-  )
+  const filename = path.join(outputDir, `${generateNowFilename(toDate)}.csv`)
   const csv = parse(sorted)
   fs.writeFileSync(filename, csv)
   console.log(`data was written to ${filename}`)
 }
 
-writeCoinsClosePrice(
-  coins,
-  moment()
-    .add(-1, "day")
-    .toDate()
-)
+const coins = ["BTC", "ETH", "BCH", "LTC", "XRP"]
+writeCoinsClosePrice(coins, yesterday())
