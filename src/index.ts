@@ -6,7 +6,7 @@ import * as path from "path"
 
 const fields = ["coin", "time", "close"]
 const opts = { fields }
-const coins = ["BTC", "ETH", "BCH"]
+const coins = ["BTC", "ETH", "BCH", "LTC", "XRP"]
 
 function formatDate(date: Date): string {
   return moment(date).format("YYYYMMDD")
@@ -15,7 +15,7 @@ function formatDate(date: Date): string {
 async function getHistory(coin: string, toDate: Date) {
   const toDateStr = formatDate(toDate)
   const url = `https://cex.io/api/ohlcv/hd/${toDateStr}/${coin}/USD`
-  console.log(url)
+  console.log(`fetching data from: ${url}`)
   try {
     const data = await axios(url)
       .then(t => t.data)
@@ -39,10 +39,12 @@ function writeCoinsClosePrice(coins: string[], toDate: Date) {
     fs.mkdirSync(outputDir)
   }
   coins.forEach(async coin => {
+    console.log(`starting ${coin}`)
     const data = await getHistory(coin, toDate)
     const filename = path.join(outputDir, `${coin}.${formatDate(toDate)}.csv`)
     const csv = parse(data)
     fs.writeFileSync(filename, csv)
+    console.log(`data for ${coin} was written to ${filename}`)
   })
 }
 

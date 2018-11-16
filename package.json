@@ -3,9 +3,15 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "scripts": {
+    "clean": "rm -rf ./dist",
+    "build": "yarn clean && tsc",
+    "package": "yarn build && pkg ./dist/index.js --targets node10-win-x64"
+  },
   "devDependencies": {
     "@types/json2csv": "^4.2.0",
     "@types/moment": "^2.13.0",
+    "pkg": "^4.3.4",
     "ts-node": "^7.0.1",
     "typescript": "^3.1.6"
   },
