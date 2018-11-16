@@ -1,0 +1,17 @@
+{
+  "name": "market-history-report",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/json2csv": "^4.2.0",
+    "@types/moment": "^2.13.0",
+    "ts-node": "^7.0.1",
+    "typescript": "^3.1.6"
+  },
+  "dependencies": {
+    "axios": "^0.18.0",
+    "json2csv": "^4.3.0",
+    "moment": "^2.22.2"
+  }
+}
