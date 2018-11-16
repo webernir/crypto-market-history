@@ -6,7 +6,8 @@
   "scripts": {
     "clean": "rm -rf ./dist",
     "build": "yarn clean && tsc",
-    "package": "yarn build && pkg ./dist/index.js --targets node10-win-x64"
+    "package": "yarn build && pkg ./dist/index.js --targets node10-win-x64 --out-dir bin",
+    "package:mac": "yarn build && pkg ./dist/index.js --targets node10-macos-x64 --out-dir bin"
   },
   "devDependencies": {
     "@types/json2csv": "^4.2.0",
